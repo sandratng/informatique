@@ -3,12 +3,13 @@
 #include <string>
 #include <unordered_map>
 #include "sommet.h"
+#include "arete.h"
 
 class graphe
 {
     public:
 
-        graphe(std::string);
+        graphe(std::string,std::string);
         ~graphe();
         void afficher() const;
         void parcoursBFS(std::string) const;
@@ -21,7 +22,7 @@ class graphe
 
     private:
         std::unordered_map<std::string,Sommet*> m_sommets;
-
+        std::unordered_map<std::string,Arete*> m_aretes;
 };
 
 #endif

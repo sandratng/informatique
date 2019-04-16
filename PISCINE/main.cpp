@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    Svgfile svgout;
-    svgout.addCircle(29, 299, 20,2, Couleur(250,250,250));
+   Svgfile svgout;
+                    svgout.addLine(100,100,200,100,"black");
     return 0;
 }
