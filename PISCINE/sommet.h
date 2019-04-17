@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include "svgfile.h"
 
 class Sommet
 {
@@ -11,9 +12,11 @@ class Sommet
         ///constructeur qui re�oit en params les donn�es du sommet
         Sommet(std::string,double,double);
         void ajouterVoisin(const Sommet*);
-        void afficherData() const;
+        void afficherData(Svgfile& svgout) const;
         void afficherVoisins() const;
         std::string getID();
+        double getX();
+        double getY();
         int getDegre();
         ///m�thode de parcours en largeur du graphe � partir du sommet
         ///renvoie les pr�d�cesseurs sous forme d'une map (cl�=id du sommet,valeur=id de son pr�d�cesseur)

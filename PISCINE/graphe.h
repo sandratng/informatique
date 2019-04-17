@@ -4,14 +4,14 @@
 #include <unordered_map>
 #include "sommet.h"
 #include "arete.h"
-
+#include "svgfile.h"
 class graphe
 {
     public:
 
         graphe(std::string,std::string);
         ~graphe();
-        void afficher() const;
+        void afficher(Svgfile& svgout) const;
         void parcoursBFS(std::string) const;
         void afficherBFS(std::string) const;
         void parcoursDFS(std::string) const;

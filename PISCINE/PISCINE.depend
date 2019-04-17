@@ -66,41 +66,45 @@
 	"util.h"
 	<windows.h>
 
-1555343384 source:c:\users\kovac\documents\github\informatique\piscine\couleur.cpp
+1555420636 source:c:\users\kovac\documents\github\informatique\piscine\couleur.cpp
 	"couleur.h"
 	"svgfile.h"
 	"util.h"
 	<iostream>
 
-1555343672 c:\users\kovac\documents\github\informatique\piscine\couleur.h
+1555420636 c:\users\kovac\documents\github\informatique\piscine\couleur.h
 	<string>
 	<cstdint>
 
-1555343466 c:\users\kovac\documents\github\informatique\piscine\svgfile.h
+1555420636 c:\users\kovac\documents\github\informatique\piscine\svgfile.h
 	<string>
 	<fstream>
 	<set>
 
-1555343520 c:\users\kovac\documents\github\informatique\piscine\util.h
+1555420636 c:\users\kovac\documents\github\informatique\piscine\util.h
 	<string>
 
-1555343773 source:c:\users\kovac\documents\github\informatique\piscine\graphe.cpp
+1555502454 source:c:\users\kovac\documents\github\informatique\piscine\graphe.cpp
 	<fstream>
 	<iostream>
+	<sstream>
 	"graphe.h"
 
-1555343203 c:\users\kovac\documents\github\informatique\piscine\graphe.h
+1555451853 c:\users\kovac\documents\github\informatique\piscine\graphe.h
 	<string>
 	<unordered_map>
 	"sommet.h"
+	"arete.h"
+	"svgfile.h"
 
-1555343222 c:\users\kovac\documents\github\informatique\piscine\sommet.h
+1555451886 c:\users\kovac\documents\github\informatique\piscine\sommet.h
 	<string>
 	<vector>
 	<unordered_map>
 	<unordered_set>
+	"svgfile.h"
 
-1555343197 source:c:\users\kovac\documents\github\informatique\piscine\sommet.cpp
+1555508961 source:c:\users\kovac\documents\github\informatique\piscine\sommet.cpp
 	<iostream>
 	<queue>
 	<stack>
@@ -108,12 +112,12 @@
 	<unordered_set>
 	"sommet.h"
 
-1555343439 source:c:\users\kovac\documents\github\informatique\piscine\svgfile.cpp
+1555420636 source:c:\users\kovac\documents\github\informatique\piscine\svgfile.cpp
 	"svgfile.h"
 	<iostream>
 	<sstream>
 
-1555343679 source:c:\users\kovac\documents\github\informatique\piscine\util.cpp
+1555420636 source:c:\users\kovac\documents\github\informatique\piscine\util.cpp
 	"util.h"
 	<random>
 	<ctime>
@@ -130,16 +134,17 @@
 	"util.h"
 	<windows.h>
 
-1555345674 source:c:\users\kovac\documents\github\informatique\piscine\main.cpp
+1555502534 source:c:\users\kovac\documents\github\informatique\piscine\main.cpp
 	<iostream>
 	"svgfile.h"
 	"couleur.h"
+	"graphe.h"
 
-1555420144 source:c:\users\kovac\documents\github\informatique\piscine\arete.cpp
+1555498321 source:c:\users\kovac\documents\github\informatique\piscine\arete.cpp
 	<iostream>
 	"arete.h"
 
-1555420148 c:\users\kovac\documents\github\informatique\piscine\arete.h
+1555498352 c:\users\kovac\documents\github\informatique\piscine\arete.h
 	<string>
 	<vector>
 	<iostream>

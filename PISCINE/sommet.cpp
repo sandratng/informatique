@@ -5,22 +5,19 @@
 #include<unordered_set>
 #include "sommet.h"
 
+
 Sommet::Sommet(std::string id,double x,double y):m_id{id},m_x{x},m_y{y}
 {
 }
 void Sommet::ajouterVoisin(const Sommet* voisin){
     m_voisins.push_back(voisin);
 }
- void Sommet::afficherData() const{
+ void Sommet::afficherData(Svgfile& svgout) const{
      std::cout<<"    "<<m_id<<" : "<<"(x,y)=("<<m_x<<","<<m_y<<")"<<std::endl;
+     svgout.addDisk(m_x,m_y,5,"black");
+     svgout.addText(m_x-17,m_y-5,m_id,"red");
  }
 
-void Sommet::afficherVoisins() const{
-    std::cout<<"  voisins :"<<std::endl;
-    for(auto v:m_voisins) {
-        v->afficherData();
-    }
-}
 
 int Sommet::getDegre()
 {
@@ -34,6 +31,16 @@ int Sommet::getDegre()
 
  std::string Sommet::getID() {
      return m_id;
+ }
+
+ double Sommet::getX()
+ {
+     return m_x;
+ }
+
+ double Sommet::getY()
+ {
+     return m_y;
  }
 
 std::unordered_map<std::string,std::string> Sommet::parcoursBFS() const{

@@ -1,11 +1,13 @@
 #include <iostream>
 #include "svgfile.h"
 #include "couleur.h"
+#include "graphe.h"
 using namespace std;
 
 int main()
 {
-   Svgfile svgout;
-                    svgout.addLine(100,100,200,100,"black");
+    Svgfile svgout;
+    graphe Fichier{"manhattan.txt", "manhattan_weights_0.txt"};
+    Fichier.afficher(svgout);
     return 0;
 }
