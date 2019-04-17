@@ -37,6 +37,7 @@ class Sommet
         /// Donn�es sp�cifiques du sommet
         std::string m_id; // Identifiant
         double m_x, m_y; // Position
+        bool m_passer = true;
 
 };
 

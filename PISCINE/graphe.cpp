@@ -58,14 +58,19 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
         ifsPoids>>id_arete; if(ifsPoids.fail()) throw std::runtime_error("Probleme lecture id arete");
         for(int e=0; e<nb_poids; ++e)
         {
-            std::cout << " Oui"<< std::endl;
             ifsPoids>>poids; if(ifsPoids.fail()) throw std::runtime_error("Probleme lecture poids");
             (m_aretes.find(id_arete))->second->ajouterPoids(poids);
         }
-        std::cout << "SAUS";
     }
 
 }
+
+
+void graphe::PRIM(int poid)
+{
+
+}
+
 void graphe::afficher(Svgfile& svgout) const{
   int compteur = 0;
   int cpt_arete = 0;
@@ -104,12 +109,6 @@ void graphe::afficher(Svgfile& svgout) const{
         nb_poids = a ->second -> getNbPoids();
 
         svgout.addLine(x1, y1, x2, y2, "black");
-
-        /*if(x1!=x2 && y1!=y2)
-        {
-            position_x += 11;
-            position_y += 3;
-        }*/
 
         if(x1==x2)
         {

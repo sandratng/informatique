@@ -11,6 +11,7 @@ class graphe
 
         graphe(std::string,std::string);
         ~graphe();
+        void PRIM(int);
         void afficher(Svgfile& svgout) const;
         void parcoursBFS(std::string) const;
         void afficherBFS(std::string) const;

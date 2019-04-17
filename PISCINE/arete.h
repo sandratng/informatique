@@ -21,6 +21,7 @@ class Arete
     private:
         /// Poids de l'arête
         std::vector<double> m_poids;
+        bool m_marque = true;
 
         /// Donnees des arêtes
         std::string m_id; // Identifiant
