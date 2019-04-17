@@ -21,6 +21,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
     ifs >> ordre;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture ordre du graphe");
+    m_ordre = ordre;
     std::string id;
     double x,y;
     //lecture des sommets
@@ -47,7 +48,7 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
         ifs>>id; if(ifs.fail()) throw std::runtime_error("Probleme lecture arete sommet 1");
         ifs>>id_voisin; if(ifs.fail()) throw std::runtime_error("Probleme lecture arete sommet 2");
         //ajouter chaque extr�mit� � la liste des voisins de l'autre (graphe non orient�)
-        m_aretes.insert({id_arete, new Arete{id_arete,id,id_voisin,nb_poids}});
+        m_aretes.insert({id_arete, new Arete{id_arete,id,id_voisin,nb_poids,nb_arete}});
         (m_sommets.find(id))->second->ajouterVoisin((m_sommets.find(id_voisin))->second);
         (m_sommets.find(id_voisin))->second->ajouterVoisin((m_sommets.find(id))->second);//remove si graphe orient�
     }
@@ -66,9 +67,32 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
 }
 
 
-void graphe::PRIM(int poid)
+void graphe::PRIM(int poids)
 {
+    /// TRIER ARRETES
+    std::vector<Arete*> vecArete;
+    for(int i=0; i<m_aretes.find(0)->second->getNbArete(); ++i)
+    {
+        vecArete.push_back(m_aretes.find(to_string(i))->second);
+    }
 
+
+
+
+    /*int ordre = m_ordre - 1;
+    std::unordered_map<std::string,Sommet*> sommets = m_sommets;
+    std::string sAct = "0", sPrec= "R";
+
+    for(int i=0; i<ordre; i++)
+    {
+        for(int e=0; e<m_ordre; ++e)
+        {
+            if(m_aretes[e]->second->getS1() == sAct || m_aretes[e]->second->getS1() == sPrec)
+            {
+
+            }
+        }
+    }*/
 }
 
 void graphe::afficher(Svgfile& svgout) const{

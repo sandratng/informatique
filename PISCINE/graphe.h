@@ -24,6 +24,7 @@ class graphe
     private:
         std::unordered_map<std::string,Sommet*> m_sommets;
         std::unordered_map<std::string,Arete*> m_aretes;
+        int m_ordre;
 };
 
 #endif

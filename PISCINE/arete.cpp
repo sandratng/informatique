@@ -2,7 +2,7 @@
 #include "arete.h"
 
 /// CONSTRUCTEUR
-Arete::Arete(std::string id,std::string S1,std::string S2,int nb_poids):m_id{id},m_S1{S1},m_S2{S2},m_nbPoids{nb_poids}
+Arete::Arete(std::string id,std::string S1,std::string S2,int nb_poids,int nbArete):m_id{id},m_S1{S1},m_S2{S2},m_nbPoids{nb_poids}, m_nbArete{nbArete}
 {
 }
 
@@ -40,4 +40,9 @@ void Arete::afficherVec()
 std::vector<double> Arete::getVector()
 {
     return m_poids;
+}
+
+int Arete::getNbArete()
+{
+    return m_nbArete;
 }

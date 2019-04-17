@@ -8,13 +8,14 @@ class Arete
 {
     public:
         /// constructeur
-        Arete(std::string,std::string,std::string,int);
+        Arete(std::string,std::string,std::string,int,int);
         /// destructeur
         ~Arete();
         void ajouterPoids(double);
         std::string getS1();
         std::string getS2();
         std::vector<double> getVector();
+        int getNbArete();
         void afficherVec();
         int getNbPoids();
 
@@ -27,6 +28,7 @@ class Arete
         std::string m_id; // Identifiant
         std::string m_S1, m_S2; // 2 Sommets
         int m_nbPoids;
+        int m_nbArete;
 
 };
 
