@@ -1,8 +1,7 @@
-#include <iostream>
 #include "arete.h"
 
 /// CONSTRUCTEUR
-Arete::Arete(std::string id,std::string S1,std::string S2,int nb_poids,int nbArete):m_id{id},m_S1{S1},m_S2{S2},m_nbPoids{nb_poids}, m_nbArete{nbArete}
+Arete::Arete(int id,int S1,int S2):m_id{id},m_S1{S1},m_S2{S2}
 {
 }
 
@@ -11,24 +10,20 @@ Arete::~Arete()
 {
 }
 
-void Arete::ajouterPoids(double poids)
+void Arete::ajouterPoids(float poids)
 {
     std::cout << poids << "; ";
     m_poids.push_back(poids);
 }
 
-std::string Arete::getS1()
+int Arete::getS1()
 {
     return m_S1;
 }
 
-std::string Arete::getS2()
+int Arete::getS2()
 {
     return m_S2;
-}
-int Arete::getNbPoids()
-{
-    return m_nbPoids;
 }
 
 void Arete::afficherVec()
@@ -37,12 +32,22 @@ void Arete::afficherVec()
 
 }
 
-std::vector<double> Arete::getVector()
+std::vector<float> Arete::getCout()
 {
     return m_poids;
 }
 
-int Arete::getNbArete()
+float Arete::get_Cout(int poids)
 {
-    return m_nbArete;
+    return m_poids[poids];
+}
+
+bool Arete::getMark()
+{
+    return m_mark;
+}
+
+void Arete::setMark(bool mark)
+{
+    m_mark = mark;
 }

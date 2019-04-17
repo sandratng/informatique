@@ -1,34 +1,32 @@
 #ifndef ARETE_H_INCLUDED
 #define ARETE_H_INCLUDED
-#include <string>
-#include <vector>
 #include <iostream>
+#include "sommet.h"
 
 class Arete
 {
     public:
         /// constructeur
-        Arete(std::string,std::string,std::string,int,int);
+        Arete(int, int, int);
         /// destructeur
         ~Arete();
-        void ajouterPoids(double);
-        std::string getS1();
-        std::string getS2();
-        std::vector<double> getVector();
-        int getNbArete();
+        void ajouterPoids(float);
+        int getS1();
+        int getS2();
+        std::vector<float> getCout();
+        float get_Cout(int);
+        bool getMark();
+        void setMark(bool);
         void afficherVec();
-        int getNbPoids();
 
     private:
         /// Poids de l'arête
-        std::vector<double> m_poids;
-        bool m_marque = true;
+        std::vector<float> m_poids;
+        bool m_mark = false;
 
         /// Donnees des arêtes
-        std::string m_id; // Identifiant
-        std::string m_S1, m_S2; // 2 Sommets
-        int m_nbPoids;
-        int m_nbArete;
+        int m_id; // Identifiant
+        int m_S1, m_S2; // 2 Sommets
 
 };
 

@@ -1,46 +1,45 @@
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include "graphe.h"
 
-template <typename T>
-std::string to_string(T const& value) {
-    std::stringstream sstr;
-    sstr << value;
-    return sstr.str();
-}
+#include "graphe.h"
+#include <algorithm>
+
 
 graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
     std::ifstream ifs{nomFichier};
     std::ifstream ifsPoids{nomFichierPoids};
+    /// VERIFICATION DE L OUVERTURE FICHIER
     if (!ifs)
         throw std::runtime_error( "Impossible d'ouvrir en lecture " + nomFichier );
     if (!ifsPoids)
         throw std::runtime_error( "Impossible d'ouvrir en lecture " + nomFichierPoids );
+    /// VERIFICATION DE L ORDRE DU GRAPHE
     int ordre;
     ifs >> ordre;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture ordre du graphe");
     m_ordre = ordre;
-    std::string id;
+
+    int id;
     double x,y;
     //lecture des sommets
-    for (int i=0; i<ordre; ++i){
+    for (int i=0; i<ordre; ++i)
+    {
         ifs>>id; if(ifs.fail()) throw std::runtime_error("Probleme lecture donn�es sommet");
         ifs>>x; if(ifs.fail()) throw std::runtime_error("Probleme lecture donn�es sommet");
         ifs>>y; if(ifs.fail()) throw std::runtime_error("Probleme lecture donn�es sommet");
-        m_sommets.insert({id,new Sommet{id,x,y}});
+        m_sommets.push_back(new Sommet{id,x,y});
     }
+
     int taille;
     ifs >> taille;
     if ( ifs.fail() )
         throw std::runtime_error("Probleme lecture taille du graphe");
-    std::string id_arete;
-    std::string id_voisin;
+    int id_arete, id_voisin;
     int nb_arete, nb_poids;
     double poids=0;
     ifsPoids >> nb_arete; if(ifsPoids.fail()) throw std::runtime_error("Probleme lecture nombre aretes");
     ifsPoids >> nb_poids; if(ifsPoids.fail()) throw std::runtime_error("Probleme lecture nombre poids");
+    m_nbArete = nb_arete;
+    m_nbPoids= nb_poids;
     //lecture des aretes
     for (int i=0; i<taille; ++i){
         //lecture des ids des deux extr�mit�s
@@ -48,9 +47,10 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
         ifs>>id; if(ifs.fail()) throw std::runtime_error("Probleme lecture arete sommet 1");
         ifs>>id_voisin; if(ifs.fail()) throw std::runtime_error("Probleme lecture arete sommet 2");
         //ajouter chaque extr�mit� � la liste des voisins de l'autre (graphe non orient�)
-        m_aretes.insert({id_arete, new Arete{id_arete,id,id_voisin,nb_poids,nb_arete}});
-        (m_sommets.find(id))->second->ajouterVoisin((m_sommets.find(id_voisin))->second);
-        (m_sommets.find(id_voisin))->second->ajouterVoisin((m_sommets.find(id))->second);//remove si graphe orient�
+        m_aretes.push_back(new Arete{id_arete,id,id_voisin});
+        m_sommets[id]->ajouterVoisin(m_sommets[id_voisin]);
+        m_sommets[id_voisin]->ajouterVoisin(m_sommets[id]);//remove si graphe orient�
+
     }
 
     std::cout << nb_poids;
@@ -60,142 +60,168 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
         for(int e=0; e<nb_poids; ++e)
         {
             ifsPoids>>poids; if(ifsPoids.fail()) throw std::runtime_error("Probleme lecture poids");
-            (m_aretes.find(id_arete))->second->ajouterPoids(poids);
+            m_aretes[id_arete]->ajouterPoids(poids);
         }
     }
 
 }
 
+std::vector<Arete*> graphe::triCout1(int poids, std::vector<Arete*> vecArete)
+{
+    std::sort(vecArete.begin(),vecArete.end(),[poids](Arete* a1, Arete* a2)
+    {
+        return a1->get_Cout(poids) < a2->get_Cout(poids) ;
+    });
+    return vecArete;
+}
 
-void graphe::PRIM(int poids)
+std::vector<Arete*> graphe::PRIM(int poids)
 {
     /// TRIER ARRETES
-    std::vector<Arete*> vecArete;
-    for(int i=0; i<m_aretes.find(0)->second->getNbArete(); ++i)
+    std::vector<Arete*> vecAretes = m_aretes;
+    std::vector<Sommet*> vecSommets = m_sommets;
+    int fin;
+    vecAretes=triCout1(poids,vecAretes);
+    vecAretes[0] ->setMark(true);
+    vecSommets[vecAretes[0]->getS1()]->setMarque(true);
+    vecSommets[vecAretes[0]->getS2()]->setMarque(true);
+    for(size_t i = 0; i < vecSommets.size()-1; ++i)
     {
-        vecArete.push_back(m_aretes.find(to_string(i))->second);
-    }
-
-
-
-
-    /*int ordre = m_ordre - 1;
-    std::unordered_map<std::string,Sommet*> sommets = m_sommets;
-    std::string sAct = "0", sPrec= "R";
-
-    for(int i=0; i<ordre; i++)
-    {
-        for(int e=0; e<m_ordre; ++e)
+        fin = 0;
+        for(size_t j = 0; j < vecAretes.size(); ++j)
         {
-            if(m_aretes[e]->second->getS1() == sAct || m_aretes[e]->second->getS1() == sPrec)
+            if(vecAretes[j]->getMark()==false && fin==0)
             {
-
+                if(vecSommets[vecAretes[j]->getS1()]->getMarque()==true && vecSommets[vecAretes[j]->getS2()]->getMarque()==false)
+                {
+                    vecAretes[j]->setMark(true);
+                    vecSommets[vecAretes[j]->getS2()]->setMarque(true);
+                    fin = 1;
+                }else if(vecSommets[vecAretes[j]->getS2()]->getMarque()==true && vecSommets[vecAretes[j]->getS1()]->getMarque()==false)
+                {
+                    vecAretes[j]->setMark(true);
+                    vecSommets[vecAretes[j]->getS1()]->setMarque(true);
+                    fin = 1;
+                }
             }
         }
-    }*/
+    }
+    return vecAretes;
 }
 
-void graphe::afficher(Svgfile& svgout) const{
-  int compteur = 0;
-  int cpt_arete = 0;
-  for (auto x : m_sommets)
-  {
-      compteur++;
-  }
 
-  for (auto a : m_aretes)
-  {
-      cpt_arete++;
-  }
-    std::cout<<"graphe : "<<std::endl;
-    std::cout<<"   ordre : "<< compteur << std::endl;
-    std::cout<<"   nombre d'arete : "<< cpt_arete << std::endl;
-
-    for( auto x = m_sommets.begin(); x != m_sommets.end(); ++x)
+void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, std::string couleur) const
+{
+    int cpt_arete = 0;
+    for (auto a : vecArete)
     {
-        std::cout << "   sommet : ";
-        x->second->afficherData(svgout);
-
-        std::cout << std::endl;
+        cpt_arete++;
     }
-    int nb_poids=0;
+
+
+
     double position_x=0, position_y=0, x1, x2, y1, y2;
     double dif_x=0, dif_y=0;
     std::string text;
-    std::vector<double> vectArete;
-    for(auto a = m_aretes.begin(); a != m_aretes.end(); ++a)
+    std::vector<float> vectCout;
+    for(int a = 0; a < cpt_arete ; ++a)
     {
-        x1 = m_sommets.find(a->second->getS1())->second->getX();
-        x2 = m_sommets.find(a->second->getS2())->second->getX();
-        y1 = m_sommets.find(a->second->getS1())->second->getY();
-        y2 = m_sommets.find(a->second->getS2())->second->getY();
-        vectArete = a->second->getVector();
-        nb_poids = a ->second -> getNbPoids();
-
-        svgout.addLine(x1, y1, x2, y2, "black");
-
-        if(x1==x2)
+        if(vecArete[a]->getMark()==true || vecArete==m_aretes)
         {
-            dif_x=0;
-            position_x = x1;
-        }
-        else if(x1<x2)
-        {
-            position_x = x1;
-            dif_x = x2-x1;
-        }else
-        {
-            position_x = x2;
-            dif_x = x1-x2;
-        }
 
 
-        if(y1==y2)
-        {
-            dif_y=0;
-            position_y = y1;
-        }
-        else if(y1<y2)
-        {
-            position_y = y1;
-            dif_y = y2-y1;
-        }else
-        {
-            position_y = y2;
-            dif_y = y1-y2;
-        }
-        dif_x = dif_x/2;
-        position_x += dif_x;
+            x1 = m_sommets[vecArete[a]->getS1()]->getX();
+            x2 = m_sommets[vecArete[a]->getS2()]->getX();
+            y1 = m_sommets[vecArete[a]->getS1()]->getY();
+            y2 = m_sommets[vecArete[a]->getS2()]->getY();
 
-        dif_y = dif_y/2;
-        position_y += dif_y;
-        std::cout << x1 << " " << x2 << ";";
-        if(x1==x2)
-        {
-            position_x += 5;
-        }
-        if(y1==y2)
-        {
-            position_y -= 5;
-        }
-        if(y1!=y2 && x1!=x2)
-        {
-            position_x += 5;
-            position_y += 5;
-        }
+            vectCout = vecArete[a]->getCout();
 
-        std::cout << to_string(vectArete[0]) << ";" << vectArete[1]<< "   ";
-        for(int i=0; i<nb_poids-1; ++i)
-        {
-            text += to_string(vectArete[i]) + ";";
+
+            svgout.addLine(x1, y1, x2, y2, couleur);
+
+
+            if(x1==x2)
+            {
+                dif_x=0;
+                position_x = x1;
+            }
+            else if(x1<x2)
+            {
+                position_x = x1;
+                dif_x = x2-x1;
+            }else
+            {
+                position_x = x2;
+                dif_x = x1-x2;
+            }
+
+
+            if(y1==y2)
+            {
+                dif_y=0;
+                position_y = y1;
+            }
+            else if(y1<y2)
+            {
+                position_y = y1;
+                dif_y = y2-y1;
+            }else
+            {
+                position_y = y2;
+                dif_y = y1-y2;
+            }
+            dif_x = dif_x/2;
+            position_x += dif_x;
+
+            dif_y = dif_y/2;
+            position_y += dif_y;
+
+
+
+            std::cout << x1 << " " << x2 << ";";
+
+
+
+            if(x1==x2)
+            {
+                position_x += 5;
+            }
+            if(y1==y2)
+            {
+                position_y -= 5;
+            }
+            if(y1!=y2 && x1!=x2)
+            {
+                position_x += 5;
+                position_y += 5;
+            }
+
+            std::cout << to_string(vectCout[0]) << ";" << vectCout[1]<< "   ";
+            for(int i=0; i<m_nbPoids-1; ++i)
+            {
+                text += to_string(vectCout[i]) + ";";
+            }
+            text += to_string(vectCout[m_nbPoids-1]);
+            svgout.addText(position_x,position_y,text,couleur);
+            text="";
         }
-        text += to_string(vectArete[nb_poids-1]);
-        svgout.addText(position_x,position_y,text,"black");
-        text="";
     }
-     std::cout << std::endl;
+    for( int i = 0; i < m_ordre ; ++i)
+    {
+        std::cout << "   sommet : ";
+        m_sommets[i]->afficherData(svgout);
+
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 }
 
+std::vector<Arete*> graphe::getm_Aretes()
+{
+    return m_aretes;
+}
+/*
 void graphe::parcoursBFS(std::string id) const{
     Sommet*s0=(m_sommets.find(id))->second;
     std::unordered_map<std::string,std::string> l_pred;
@@ -254,8 +280,9 @@ std::cout << std::endl;
 return nb;
 }
 
-
+*/
 graphe::~graphe()
 {
     //dtor
 }
+

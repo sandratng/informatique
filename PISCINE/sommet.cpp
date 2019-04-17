@@ -6,16 +6,17 @@
 #include "sommet.h"
 
 
-Sommet::Sommet(std::string id,double x,double y):m_id{id},m_x{x},m_y{y}
+Sommet::Sommet(int id,double x,double y):m_id{id},m_x{x},m_y{y}
 {
 }
+
 void Sommet::ajouterVoisin(const Sommet* voisin){
     m_voisins.push_back(voisin);
 }
  void Sommet::afficherData(Svgfile& svgout) const{
      std::cout<<"    "<<m_id<<" : "<<"(x,y)=("<<m_x<<","<<m_y<<")"<<std::endl;
      svgout.addDisk(m_x,m_y,5,"black");
-     svgout.addText(m_x-17,m_y-5,m_id,"red");
+     svgout.addText(m_x-17,m_y-5,to_string(m_id),"black");
  }
 
 
@@ -29,7 +30,8 @@ int Sommet::getDegre()
   return nb;
 }
 
- std::string Sommet::getID() {
+ int Sommet::getID()
+ {
      return m_id;
  }
 
@@ -43,6 +45,17 @@ int Sommet::getDegre()
      return m_y;
  }
 
+ bool Sommet::getMarque()
+ {
+     return m_marque;
+ }
+
+ void Sommet::setMarque(bool marque)
+ {
+     m_marque = marque;
+ }
+
+/*
 std::unordered_map<std::string,std::string> Sommet::parcoursBFS() const{
     std::unordered_map<std::string,std::string> l_pred;
     std::queue <const Sommet*> file;
@@ -82,7 +95,7 @@ std::unordered_set<std::string> Sommet::rechercherCC() const{
     }
 std::cout << std::endl;
     return cc;
-}
+}*/
 Sommet::~Sommet()
 {
     //dtor

@@ -5,19 +5,30 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "svgfile.h"
+#include <fstream>
+#include <sstream>
+
+template <typename T>
+std::string to_string(T const& value) {
+    std::stringstream sstr;
+    sstr << value;
+    return sstr.str();
+}
 
 class Sommet
 {
     public:
         ///constructeur qui re�oit en params les donn�es du sommet
-        Sommet(std::string,double,double);
+        Sommet(int,double,double);
         void ajouterVoisin(const Sommet*);
         void afficherData(Svgfile& svgout) const;
         void afficherVoisins() const;
-        std::string getID();
+        int getID();
         double getX();
         double getY();
         int getDegre();
+        bool getMarque();
+        void setMarque(bool);
         ///m�thode de parcours en largeur du graphe � partir du sommet
         ///renvoie les pr�d�cesseurs sous forme d'une map (cl�=id du sommet,valeur=id de son pr�d�cesseur)
         std::unordered_map<std::string,std::string> parcoursBFS() const;
@@ -35,9 +46,9 @@ class Sommet
         std::vector<const Sommet*> m_voisins;
 
         /// Donn�es sp�cifiques du sommet
-        std::string m_id; // Identifiant
+        int m_id; // Identifiant
         double m_x, m_y; // Position
-        bool m_passer = true;
+        bool m_marque = false;
 
 };
 
