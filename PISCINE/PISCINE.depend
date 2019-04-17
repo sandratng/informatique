@@ -149,3 +149,86 @@
 	<vector>
 	<iostream>
 
+1555519626 source:c:\users\sandr\desktop\piscine\arete.cpp
+	<iostream>
+	"arete.h"
+
+1555519626 c:\users\sandr\desktop\piscine\arete.h
+	<string>
+	<vector>
+	<iostream>
+
+1555345451 source:c:\users\sandr\desktop\piscine\couleur.cpp
+	"couleur.h"
+	"svgfile.h"
+	"util.h"
+	<iostream>
+
+1555345451 c:\users\sandr\desktop\piscine\couleur.h
+	<string>
+	<cstdint>
+
+1555345451 c:\users\sandr\desktop\piscine\svgfile.h
+	<string>
+	<fstream>
+	<set>
+
+1555345451 c:\users\sandr\desktop\piscine\util.h
+	<string>
+
+1555522701 source:c:\users\sandr\desktop\piscine\main.cpp
+	<iostream>
+	"svgfile.h"
+	"couleur.h"
+	"graphe.h"
+
+1555522558 c:\users\sandr\desktop\piscine\graphe.h
+	<string>
+	<unordered_map>
+	"sommet.h"
+	"arete.h"
+	"svgfile.h"
+
+1555515269 c:\users\sandr\desktop\piscine\sommet.h
+	<string>
+	<vector>
+	<unordered_map>
+	<unordered_set>
+	"svgfile.h"
+
+1555509496 source:c:\users\sandr\desktop\piscine\sommet.cpp
+	<iostream>
+	<queue>
+	<stack>
+	<unordered_map>
+	<unordered_set>
+	"sommet.h"
+
+1555345451 source:c:\users\sandr\desktop\piscine\svgfile.cpp
+	"svgfile.h"
+	<iostream>
+	<sstream>
+
+1555345451 source:c:\users\sandr\desktop\piscine\util.cpp
+	"util.h"
+	<random>
+	<ctime>
+	<iostream>
+	<cstdio>
+	<streambuf>
+	<vector>
+	<cstdlib>
+	<cstdio>
+	<algorithm>
+	<cstring>
+	<iostream>
+	<thread>
+	"util.h"
+	<windows.h>
+
+1555522558 source:c:\users\sandr\desktop\piscine\graphe.cpp
+	<fstream>
+	<iostream>
+	<sstream>
+	"graphe.h"
+

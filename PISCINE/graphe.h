@@ -17,6 +17,8 @@ class graphe
         void afficherBFS(std::string) const;
         void parcoursDFS(std::string) const;
         void afficherDFS(std::string) const;
+        void verif();
+        void pointPareto(Svgfile& svgout, std::string couleur) const;
         int rechercher_afficherToutesCC() const;
 
     protected:

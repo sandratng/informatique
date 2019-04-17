@@ -216,6 +216,62 @@ void graphe::afficherBFS(std::string id) const{
         std::cout<<id<<std::endl;
     }
 }
+/*
+void graphe::verif()
+{
+    int puissance = 1, possib = 1;
+    int compteur = 0;
+    int nb = 0;
+    bool sommets[m_ordre];
+
+    for ( auto k : m_aretes) /// on calcule le nombre de possibiltes
+    {
+        possib = possib*2;
+    }
+    for(int i = 0; i < possib; i++)
+    {
+        for( auto j : m_aretes) /// pour chaque arete
+        {
+            puissance *= 2;
+            if(compteur%puissance == 0)
+            {
+                j.second->changeMarque();
+            }
+            if(j.second->getMarque == 1)
+            {
+                nb += 1;
+              //  S1 = m_aretes[j]->second->getS1();
+              //  S2 = m_aretes[j]->second->getS2();
+              //  m_sommets[S1]->second->changeMarque();
+              //  m_sommets[S2]->second->changeMarque();
+
+            }
+        }
+        if(nb == m_ordre-1)
+        {
+            /// on retient la possibilitée si le nombre d'arrete est celui de l'ordre du graphe moins 1
+            /// on ajoute un nouveau graphe en fonciton de ces aretes
+            new Graph = nouveau;
+
+        }
+        compteur ++;
+    }
+}
+*/
+void graphe::pointPareto(Svgfile& svgout, std::string couleur) const
+{
+    std::vector<double> poids;
+    int poidsTot1= 0, poidsTot2= 0;
+
+    for( auto i : m_aretes)
+    {
+        poids = i.second->getVector();
+        poidsTot1 = poidsTot1 + poids[0];
+        poidsTot2 = poidsTot2 + poids[1];
+    }
+    svgout.addDisk(poidsTot1+500,poidsTot2,5,couleur);
+
+}
 void graphe::parcoursDFS(std::string id) const{
     Sommet*s0=(m_sommets.find(id))->second;
     std::unordered_map<std::string,std::string> l_pred;
