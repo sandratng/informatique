@@ -10,7 +10,7 @@ class graphe
         graphe(std::string,std::string);
         ~graphe();
         std::vector<Arete*> PRIM(int);
-        void afficher(Svgfile& svgout, std::vector<Arete*>, double, double, std::string) const;
+        void afficher(Svgfile& svgout, std::vector<Arete*>,std::string) const;
         //void parcoursBFS(std::string) const;
         //void afficherBFS(std::string) const;
         //void parcoursDFS(std::string) const;
