@@ -13,10 +13,10 @@ Sommet::Sommet(int id,double x,double y):m_id{id},m_x{x},m_y{y}
 void Sommet::ajouterVoisin(const Sommet* voisin){
     m_voisins.push_back(voisin);
 }
- void Sommet::afficherData(Svgfile& svgout) const{
+ void Sommet::afficherData(Svgfile& svgout, double x, double y) const{
      std::cout<<"    "<<m_id<<" : "<<"(x,y)=("<<m_x<<","<<m_y<<")"<<std::endl;
-     svgout.addDisk(m_x,m_y,5,"black");
-     svgout.addText(m_x-17,m_y-5,to_string(m_id),"black");
+     svgout.addDisk(m_x+x,m_y+y,5,"black");
+     svgout.addText(m_x-17 + x,m_y-5+y,to_string(m_id),"black");
  }
 
 

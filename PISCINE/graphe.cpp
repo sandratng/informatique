@@ -110,7 +110,7 @@ std::vector<Arete*> graphe::PRIM(int poids)
 }
 
 
-void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, std::string couleur) const
+void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, double x, double y, std::string couleur) const
 {
     int cpt_arete = 0;
     for (auto a : vecArete)
@@ -130,10 +130,10 @@ void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, std::string
         {
 
 
-            x1 = m_sommets[vecArete[a]->getS1()]->getX();
-            x2 = m_sommets[vecArete[a]->getS2()]->getX();
-            y1 = m_sommets[vecArete[a]->getS1()]->getY();
-            y2 = m_sommets[vecArete[a]->getS2()]->getY();
+            x1 = m_sommets[vecArete[a]->getS1()]->getX() + x;
+            x2 = m_sommets[vecArete[a]->getS2()]->getX() + x;
+            y1 = m_sommets[vecArete[a]->getS1()]->getY() + y;
+            y2 = m_sommets[vecArete[a]->getS2()]->getY() + y;
 
             vectCout = vecArete[a]->getCout();
 
@@ -210,7 +210,7 @@ void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, std::string
     for( int i = 0; i < m_ordre ; ++i)
     {
         std::cout << "   sommet : ";
-        m_sommets[i]->afficherData(svgout);
+        m_sommets[i]->afficherData(svgout, x, y);
 
         std::cout << std::endl;
     }
