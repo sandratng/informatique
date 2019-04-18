@@ -18,6 +18,7 @@ class graphe
         //int rechercher_afficherToutesCC() const;
         std::vector<Arete*> triCout1(int,std::vector<Arete*>);
         std::vector<Arete*> getm_Aretes();
+        std::unordered_map<int,std::vector<Arete*>> optimisation();
     protected:
 
     private:

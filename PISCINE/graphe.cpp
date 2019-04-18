@@ -286,3 +286,86 @@ graphe::~graphe()
     //dtor
 }
 
+std::unordered_map<int, std::vector<Arete*>> graphe::optimisation()
+{
+    std::unordered_map<int,std::vector<Arete*>> allGraphes;
+    std::vector<Arete*> aretes = m_aretes;
+    int puissance = 1, possib = 1;
+    int compteur = 0;
+    int nb = 0;
+    int num = 0;
+
+    for ( auto k : aretes) /// on calcule le nombre de possibiltes
+    {
+        possib = possib*2;
+        std::cout << possib ;
+    }
+    for(int y = 0; y < possib; y++)
+    {
+        puissance = 1;
+        nb = 0;
+        for( auto j : aretes) /// pour chaque arete
+        {
+            if(compteur%(puissance) == 0)
+            {
+                j->setMark(!j->getMark());
+            }
+            if(j->getMark() == 1)
+            {
+                nb = nb + 1;
+        /*        for ( auto a : sommets)
+                {
+                    for ( int i = 0; i< m_ordre; i++)
+                    {
+                        tot = tot + i;
+                        if ( j.second->getS1 == i)
+                        {
+                            sommets[i]= j.second->getS1;
+                        }
+                        if ( j.second->getS2 == i)
+                        {
+                            sommets[i]= j.second->getS2;
+                        }
+                    }
+
+                }*/
+            }
+            puissance = puissance * 2;
+        }
+        if(nb == m_ordre-1)
+        {
+
+            for ( size_t i = 0; i< aretes.size(); ++i)
+            {
+                std::cout<< aretes[i]->getMark();
+            }
+            std::cout << std::endl;
+            allGraphes.insert({num,{aretes}});
+            num = num + 1;
+
+
+
+        }
+        compteur ++;
+    }
+    return allGraphes;
+}
+
+/*
+void graphe::pointPareto(Svgfile& svgout, std::string couleur) const
+{
+    std::vector<double> poids;
+    int poidsTot1= 0, poidsTot2= 0;
+
+    for( auto i : m_aretes)
+    {
+        if(i.second->getMarque()==1)
+        {
+        poids = i.second->getVector();
+        poidsTot1 = poidsTot1 + poids[0];
+        poidsTot2 = poidsTot2 + poids[1];
+        }
+    }
+    svgout.addDisk(poidsTot1,poidsTot2,5,couleur);
+
+}*/
