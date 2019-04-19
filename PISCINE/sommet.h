@@ -21,7 +21,7 @@ class Sommet
         ///constructeur qui re�oit en params les donn�es du sommet
         Sommet(int,double,double);
         void ajouterVoisin(const Sommet*);
-        void afficherData(Svgfile& svgout) const;
+        void afficherData(Svgfile& svgout, double, double) const;
         void afficherVoisins() const;
         int getID();
         double getX();

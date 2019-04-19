@@ -62,7 +62,9 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
             ifsPoids>>poids; if(ifsPoids.fail()) throw std::runtime_error("Probleme lecture poids");
             m_aretes[id_arete]->ajouterPoids(poids);
         }
+        m_grapheIni.push_back(true);
     }
+
 
 }
 
@@ -75,71 +77,65 @@ std::vector<Arete*> graphe::triCout1(int poids, std::vector<Arete*> vecArete)
     return vecArete;
 }
 
-std::vector<Arete*> graphe::PRIM(int poids)
+std::vector<bool> graphe::PRIM(int poids)
 {
     /// TRIER ARRETES
     std::vector<Arete*> vecAretes = m_aretes;
     std::vector<Sommet*> vecSommets = m_sommets;
+    std::vector<bool> vecPRIM;
     int fin;
+    for(int i=0; i<m_nbArete; ++i)
+    {
+        vecPRIM.push_back(false);
+    }
     vecAretes=triCout1(poids,vecAretes);
-    vecAretes[0] ->setMark(true);
+    vecPRIM[0]=true;
     vecSommets[vecAretes[0]->getS1()]->setMarque(true);
     vecSommets[vecAretes[0]->getS2()]->setMarque(true);
-    for(size_t i = 0; i < vecSommets.size()-1; ++i)
+    for(int i = 0; i < m_ordre-1; ++i)
     {
         fin = 0;
-        for(size_t j = 0; j < vecAretes.size(); ++j)
+        for(int j = 0; j < m_nbArete; ++j)
         {
-            if(vecAretes[j]->getMark()==false && fin==0)
+            if(vecPRIM[j]==false && fin==0)
             {
                 if(vecSommets[vecAretes[j]->getS1()]->getMarque()==true && vecSommets[vecAretes[j]->getS2()]->getMarque()==false)
                 {
-                    vecAretes[j]->setMark(true);
+                    vecPRIM[j]=true;
                     vecSommets[vecAretes[j]->getS2()]->setMarque(true);
                     fin = 1;
                 }else if(vecSommets[vecAretes[j]->getS2()]->getMarque()==true && vecSommets[vecAretes[j]->getS1()]->getMarque()==false)
                 {
-                    vecAretes[j]->setMark(true);
+                    vecPRIM[j]=true;
                     vecSommets[vecAretes[j]->getS1()]->setMarque(true);
                     fin = 1;
                 }
             }
         }
     }
-    return vecAretes;
+    return vecPRIM;
 }
 
 
-void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, std::string couleur) const
+void graphe::afficher(Svgfile& svgout, std::vector<bool> vecArete, double x, double y, std::string couleur) const
 {
-    int cpt_arete = 0;
-    for (auto a : vecArete)
-    {
-        cpt_arete++;
-    }
-
-
 
     double position_x=0, position_y=0, x1, x2, y1, y2;
     double dif_x=0, dif_y=0;
     std::string text;
     std::vector<float> vectCout;
-    for(int a = 0; a < cpt_arete ; ++a)
+    for(int a = 0; a < m_nbArete ; ++a)
     {
-        if(vecArete[a]->getMark()==true || vecArete==m_aretes)
+        if(vecArete[a]==true)
         {
+            x1 = m_sommets[m_aretes[a]->getS1()]->getX()+x;
+            x2 = m_sommets[m_aretes[a]->getS2()]->getX()+x;
+            y1 = m_sommets[m_aretes[a]->getS1()]->getY()+y;
+            y2 = m_sommets[m_aretes[a]->getS2()]->getY()+y;
 
-
-            x1 = m_sommets[vecArete[a]->getS1()]->getX();
-            x2 = m_sommets[vecArete[a]->getS2()]->getX();
-            y1 = m_sommets[vecArete[a]->getS1()]->getY();
-            y2 = m_sommets[vecArete[a]->getS2()]->getY();
-
-            vectCout = vecArete[a]->getCout();
-
+            vectCout = m_aretes[a]->getCout();
 
             svgout.addLine(x1, y1, x2, y2, couleur);
-
 
             if(x1==x2)
             {
@@ -177,12 +173,6 @@ void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, std::string
             dif_y = dif_y/2;
             position_y += dif_y;
 
-
-
-            std::cout << x1 << " " << x2 << ";";
-
-
-
             if(x1==x2)
             {
                 position_x += 5;
@@ -210,17 +200,13 @@ void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, std::string
     for( int i = 0; i < m_ordre ; ++i)
     {
         std::cout << "   sommet : ";
-        m_sommets[i]->afficherData(svgout);
+        m_sommets[i]->afficherData(svgout,x,y);
 
         std::cout << std::endl;
     }
     std::cout << std::endl;
 }
 
-std::vector<Arete*> graphe::getm_Aretes()
-{
-    return m_aretes;
-}
 /*
 void graphe::parcoursBFS(std::string id) const{
     Sommet*s0=(m_sommets.find(id))->second;
@@ -284,5 +270,160 @@ return nb;
 graphe::~graphe()
 {
     //dtor
+}
+
+std::vector<bool> graphe::getVecAllGraphes(int emplacement)
+{
+    return m_allGraphes[emplacement];
+}
+
+std::vector<bool> graphe::getGraphPRIM(int emplacement)
+{
+    return m_graphPRIM[emplacement];
+}
+
+std::vector<bool> graphe::getGrapheIni()
+{
+    return m_grapheIni;
+}
+void graphe::optimisation(graphe fichier)
+{
+    std::vector<bool> vecAretes;
+    for(int i=0; i<m_nbArete; ++i)
+    {
+        vecAretes.push_back(false);
+    }
+    int puissance = 1, possib = 1;
+    int compteur = 0;
+    int nb = 0;
+    int num = 0;
+    for (int i=0; i<m_nbArete; ++i) /// on calcule le nombre de possibiltes
+    {
+        possib = possib*2;
+        std::cout << possib << " "  << m_nbArete << " ";
+    }
+    for(int y = 0; y < possib; y++)
+    {
+        puissance = 1;
+        nb = 0;
+        for( auto j : vecAretes) /// pour chaque arete
+        {
+            if(compteur%(puissance) == 0)
+            {
+                j = !j;
+            }
+
+            if(j == true)
+            {
+                nb = nb + 1;
+            }
+            puissance = puissance * 2;
+        }
+        if(nb == m_ordre-1)
+        {
+            if (true == fichier.connexite(vecAretes))
+            {
+                m_allGraphes.push_back(vecAretes);
+                num = num + 1;
+                if (num%10000==0)
+                {
+                    std::cout << "num : "<< num << "  ";
+                }
+            }
+        }
+        compteur ++;
+    }m_nbAllGraphes = num;
+}
+
+int graphe::getNbAllGraphes()
+{
+    return m_nbAllGraphes;
+}
+
+void graphe::eraseAllGraphes(int position)
+{
+    m_allGraphes.erase(m_allGraphes.begin()+position);
+    m_nbAllGraphes -= 1;
+}
+
+bool graphe::connexite(std::vector<bool> vea)
+{
+    std::vector<bool> vecArete = vea;
+    std::vector<Sommet*> vecSommets = m_sommets;
+    int valide = 0;
+    bool cycle=false, fin = false;
+    for(auto o : vecSommets)
+    {
+        o->setMarque(false);
+    }
+    for(int i=0; i < m_nbArete; ++i)
+    {
+        if(vecArete[i]==true && valide ==0)
+        {
+            vecArete[i] = false;
+            vecSommets[m_aretes[i]->getS1()]->setMarque(true);
+            vecSommets[m_aretes[i]->getS2()]->setMarque(true);
+            valide = 1;
+        }
+    }
+    for(int e=0; e<m_ordre-1; e++)
+    {
+        for(int i=0; i < m_nbArete; ++i)
+        {
+            if(fin == true)
+                break;
+            if(vecArete[i]==true && fin == false)
+            {
+                if(vecSommets[m_aretes[i]->getS1()]->getMarque() == true && vecSommets[m_aretes[i]->getS2()]->getMarque() == false)
+                {
+                    vecSommets[m_aretes[i]->getS2()]->setMarque(true);
+                    vecArete[i]=false;
+                    fin = true;
+                    valide ++;
+                }else if(vecSommets[m_aretes[i]->getS2()]->getMarque() == true && vecSommets[m_aretes[i]->getS1()]->getMarque() == false)
+                {
+                    vecSommets[m_aretes[i]->getS1()]->setMarque(true);
+                    vecArete[i]=false;
+                    fin = true;
+                    valide ++;
+                }else if(vecSommets[m_aretes[i]->getS2()]->getMarque() == true && vecSommets[m_aretes[i]->getS1()]->getMarque() == true)
+                {
+                    cycle = true;
+                    vecArete[i]=false;
+                    fin = true;
+                    valide ++;
+                }
+            }
+        }
+        fin = false;
+    }
+    if(valide != m_ordre-1 || cycle == true)
+    {
+        return false;
+    }
+    return true;
+}
+
+void graphe::CoutAllGraphes()
+{
+    std::vector<float> vecCout;
+    for(int i=0; i< m_nbPoids;++i)
+    {
+        vecCout.push_back(0);
+    }
+    for(int i=0; i < m_nbAllGraphes; ++i)
+    {
+        for(int a=0; a<m_nbArete ; ++a)
+        {
+            if(m_allGraphes[i][a]==true)
+            {
+                for(int z=0; z<m_nbPoids; z++)
+                {
+                    vecCout[z] += m_aretes[a]->get_Cout(z);
+                }
+            }
+        }
+        m_coutAllGraphes.push_back(vecCout);
+    }
 }
 

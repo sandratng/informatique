@@ -41,13 +41,3 @@ float Arete::get_Cout(int poids)
 {
     return m_poids[poids];
 }
-
-bool Arete::getMark()
-{
-    return m_mark;
-}
-
-void Arete::setMark(bool mark)
-{
-    m_mark = mark;
-}
