@@ -7,26 +7,40 @@ using namespace std;
 int main()
 {
     Svgfile svgout;
-    std::unordered_map<int,std::vector<Arete*>> allGraphes;
-    graphe Fichier{"broadway.txt", "broadway_weights_0.txt"};
-    //Fichier.afficher(svgout,Fichier.getm_Aretes(),0, 0, "black");
-    allGraphes = Fichier.optimisation();
-    std::vector<Arete*> primP1 = Fichier.PRIM(0);
-    Fichier.afficher(svgout,allGraphes.find(0)->second,0,0,"black");
-    std::cout << endl;
-    std::cout << endl;
-    int i = 0;
-for(auto a : allGraphes)
-{
+    graphe Fichier{"triville.txt", "triville_weights_0.txt"};
+    //Fichier.afficher(svgout,Fichier.getGrapheIni(),0,0,"black");
 
-    for ( auto x : a.second)
+
+    //std::cout << std::endl << Fichier.getNbAllGraphes() << std::endl;
+    //Fichier.afficher(svgout, Fichier.getVecAllGraphes(1),0,0,"red");
+
+    //std::vector<Arete*> primP1 = Fichier.PRIM(1);
+
+    //Fichier.afficher(svgout, Fichier.getVecAllGraphes(7),0,0,"red");
+    //std::cout << "DAZDSA" << Fichier.getNbAllGraphes() << std::endl;
+
+    /// PRIM
+
+    /*
+    std::vector<bool> prim;
+    std::string text;
+    for(int i=0; i<Fichier.getNbPoids();++i)
     {
+        prim = Fichier.PRIM(i);
+        text = Fichier.calculPoidsTot(prim);
+        svgout.addText(i%2*400 + 100, (i/2)*400 + 50,"AFFICHAGE PRIM : Cout "+ to_string(i) + " "+text, "black");
+        Fichier.afficher(svgout, prim, i%2*400, (i/2)*400, "black");
+    }*/
 
-    std::cout << x->getMark();
-    }
-    i++;
-    std::cout << std::endl;
-}
-    //Fichier.afficher(svgout, primP1, 400, 0,"red");
+    /// PARETO
+
+    Fichier.optimisation();
+    Fichier.CoutAllGraphes();
+    Fichier.triCout2(1);
+    Fichier.selectPareto();
+    Fichier.affichagePareto(svgout);
+
+
+
     return 0;
 }

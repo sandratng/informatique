@@ -13,16 +13,14 @@ class Arete
         void ajouterPoids(float);
         int getS1();
         int getS2();
+        int getID();
         std::vector<float> getCout();
         float get_Cout(int);
-        bool getMark();
-        void setMark(bool);
         void afficherVec();
 
     private:
         /// Poids de l'arête
         std::vector<float> m_poids;
-        bool m_mark = false;
 
         /// Donnees des arêtes
         int m_id; // Identifiant

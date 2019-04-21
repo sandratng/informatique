@@ -62,7 +62,9 @@ graphe::graphe(std::string nomFichier, std::string nomFichierPoids){
             ifsPoids>>poids; if(ifsPoids.fail()) throw std::runtime_error("Probleme lecture poids");
             m_aretes[id_arete]->ajouterPoids(poids);
         }
+        m_grapheIni.push_back(true);
     }
+
 
 }
 
@@ -75,71 +77,98 @@ std::vector<Arete*> graphe::triCout1(int poids, std::vector<Arete*> vecArete)
     return vecArete;
 }
 
-std::vector<Arete*> graphe::PRIM(int poids)
+std::string graphe::calculPoidsTot(std::vector<bool> vecArete)
+{
+    std::vector<float> vecPoids;
+    std::string text;
+    for(int i=0; i<m_nbPoids; ++i)
+    {
+        vecPoids.push_back(0);
+    }
+    for(int i=0; i<m_nbArete; ++i)
+    {
+        if(vecArete[i]==true)
+        {
+            for(int j=0; j<m_nbPoids;++j)
+            {
+                vecPoids[j] += m_aretes[i]->get_Cout(j);
+            }
+        }
+    }
+    text = "(";
+    for(int i=0; i<m_nbPoids-1;i++)
+    {
+        text += to_string(vecPoids[i]) + ";";
+    }
+    text += to_string(vecPoids[m_nbPoids-1]) + ")";
+    return text;
+}
+
+std::vector<bool> graphe::PRIM(int poids)
 {
     /// TRIER ARRETES
     std::vector<Arete*> vecAretes = m_aretes;
     std::vector<Sommet*> vecSommets = m_sommets;
+    std::vector<bool> vecPRIM;
     int fin;
+    for(int i=0; i<m_ordre;i++)
+    {
+        vecSommets[i]->setMarque(false);
+    }
+    for(int i=0; i<m_nbArete; ++i)
+    {
+        vecPRIM.push_back(false);
+    }
     vecAretes=triCout1(poids,vecAretes);
-    vecAretes[0] ->setMark(true);
+    vecPRIM[vecAretes[0]->getID()]=true;
     vecSommets[vecAretes[0]->getS1()]->setMarque(true);
     vecSommets[vecAretes[0]->getS2()]->setMarque(true);
-    for(size_t i = 0; i < vecSommets.size()-1; ++i)
+    for(int i = 0; i < m_ordre-1; ++i)
     {
         fin = 0;
-        for(size_t j = 0; j < vecAretes.size(); ++j)
+        for(int j = 0; j < m_nbArete; ++j)
         {
-            if(vecAretes[j]->getMark()==false && fin==0)
+            if(fin == 1)
+                break;
+            if(vecPRIM[vecAretes[j]->getID()]==false)
             {
                 if(vecSommets[vecAretes[j]->getS1()]->getMarque()==true && vecSommets[vecAretes[j]->getS2()]->getMarque()==false)
                 {
-                    vecAretes[j]->setMark(true);
+                    vecPRIM[vecAretes[j]->getID()]=true;
                     vecSommets[vecAretes[j]->getS2()]->setMarque(true);
                     fin = 1;
                 }else if(vecSommets[vecAretes[j]->getS2()]->getMarque()==true && vecSommets[vecAretes[j]->getS1()]->getMarque()==false)
                 {
-                    vecAretes[j]->setMark(true);
+                    vecPRIM[vecAretes[j]->getID()]=true;
                     vecSommets[vecAretes[j]->getS1()]->setMarque(true);
                     fin = 1;
                 }
             }
         }
     }
-    return vecAretes;
+    return vecPRIM;
 }
 
 
-void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, double x, double y, std::string couleur) const
+void graphe::afficher(Svgfile& svgout, std::vector<bool> vecArete, double x, double y, std::string couleur) const
 {
-    int cpt_arete = 0;
-    for (auto a : vecArete)
-    {
-        cpt_arete++;
-    }
-
-
 
     double position_x=0, position_y=0, x1, x2, y1, y2;
     double dif_x=0, dif_y=0;
     std::string text;
     std::vector<float> vectCout;
-    for(int a = 0; a < cpt_arete ; ++a)
+    for(int a = 0; a < m_nbArete ; ++a)
     {
-        if(vecArete[a]->getMark()==true || vecArete==m_aretes)
+        if(vecArete[a]==true)
         {
+            x1 = m_sommets[m_aretes[a]->getS1()]->getX()+x;
+            x2 = m_sommets[m_aretes[a]->getS2()]->getX()+x;
+            y1 = m_sommets[m_aretes[a]->getS1()]->getY()+y;
+            y2 = m_sommets[m_aretes[a]->getS2()]->getY()+y;
 
-
-            x1 = m_sommets[vecArete[a]->getS1()]->getX() + x;
-            x2 = m_sommets[vecArete[a]->getS2()]->getX() + x;
-            y1 = m_sommets[vecArete[a]->getS1()]->getY() + y;
-            y2 = m_sommets[vecArete[a]->getS2()]->getY() + y;
-
-            vectCout = vecArete[a]->getCout();
-
+            vectCout = m_aretes[a]->getCout();
 
             svgout.addLine(x1, y1, x2, y2, couleur);
-
 
             if(x1==x2)
             {
@@ -177,12 +206,6 @@ void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, double x, d
             dif_y = dif_y/2;
             position_y += dif_y;
 
-
-
-            std::cout << x1 << " " << x2 << ";";
-
-
-
             if(x1==x2)
             {
                 position_x += 5;
@@ -210,162 +233,236 @@ void graphe::afficher(Svgfile& svgout, std::vector<Arete*> vecArete, double x, d
     for( int i = 0; i < m_ordre ; ++i)
     {
         std::cout << "   sommet : ";
-        m_sommets[i]->afficherData(svgout, x, y);
+        m_sommets[i]->afficherData(svgout,x,y);
 
         std::cout << std::endl;
     }
     std::cout << std::endl;
 }
 
-std::vector<Arete*> graphe::getm_Aretes()
-{
-    return m_aretes;
-}
-/*
-void graphe::parcoursBFS(std::string id) const{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    l_pred=s0->parcoursBFS();
-}
-void graphe::afficherBFS(std::string id) const{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    std::cout<<"parcoursBFS a partir de "<<id<<" :"<<std::endl;
-    l_pred=s0->parcoursBFS();
-    for(auto s:l_pred){
-        std::cout<<s.first<<" <--- ";
-        std::pair<std::string,std::string> pred=s;
-        while(pred.second!=id){
-            pred=*l_pred.find(pred.second);
-            std::cout<<pred.first<<" <--- ";
-        }
-        std::cout<<id<<std::endl;
-    }
-}
-void graphe::parcoursDFS(std::string id) const{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    l_pred=s0->parcoursDFS();
-}
-void graphe::afficherDFS(std::string id) const{
-    Sommet*s0=(m_sommets.find(id))->second;
-    std::unordered_map<std::string,std::string> l_pred;
-    std::cout<<"parcoursDFS a partir de "<<id<<" :"<<std::endl;
-    l_pred=s0->parcoursDFS();
-    for(auto s:l_pred){
-        std::cout<<s.first<<" <--- ";
-        std::pair<std::string,std::string> pred=s;
-        while(pred.second!=id){
-            pred=*l_pred.find(pred.second);
-            std::cout<<pred.first<<" <--- ";
-        }
-        std::cout<<id<<std::endl;
-    }
-}
-
-int graphe::rechercher_afficherToutesCC() const{
-    int nb =1;
-    std::unordered_set<std::string> map;
-    std::cout<<"composantes connexes :"<<std::endl;
-    for( auto x : m_sommets)
-    {
-map = x.second->rechercherCC();
-std::cout << "cc" << nb << std::endl;
-   for( auto y : map)
-   {
-      std::cout << y << "   ";
-   }
-  }
-std::cout << std::endl;
-return nb;
-}
-
-*/
 graphe::~graphe()
 {
     //dtor
 }
 
-std::unordered_map<int, std::vector<Arete*>> graphe::optimisation()
+std::vector<bool> graphe::getVecAllGraphes(int emplacement)
 {
-    std::unordered_map<int,std::vector<Arete*>> allGraphes;
-    std::vector<Arete*> aretes = m_aretes;
+    return m_allGraphes[emplacement];
+}
+
+std::vector<bool> graphe::getGraphPRIM(int emplacement)
+{
+    return m_graphPRIM[emplacement];
+}
+
+std::vector<bool> graphe::getGrapheIni()
+{
+    return m_grapheIni;
+}
+
+int graphe::getNbPoids()
+{
+    return m_nbPoids;
+}
+
+void graphe::optimisation()
+{
+    std::vector<bool> vecAretes;
+    for(int i=0; i<m_nbArete; ++i)
+    {
+        vecAretes.push_back(false);
+    }
     int puissance = 1, possib = 1;
     int compteur = 0;
     int nb = 0;
     int num = 0;
 
-    for ( auto k : aretes) /// on calcule le nombre de possibiltes
+    for (int i=0; i<m_nbArete; ++i) /// on calcule le nombre de possibiltes
     {
         possib = possib*2;
-        std::cout << possib ;
+        std::cout << possib << " "  << m_nbArete << " ";
     }
     for(int y = 0; y < possib; y++)
     {
         puissance = 1;
         nb = 0;
-        for( auto j : aretes) /// pour chaque arete
+        for( auto j : vecAretes) /// pour chaque arete
         {
             if(compteur%(puissance) == 0)
             {
-                j->setMark(!j->getMark());
+                j = !j;
             }
-            if(j->getMark() == 1)
+
+            if(j == true)
             {
                 nb = nb + 1;
-        /*        for ( auto a : sommets)
-                {
-                    for ( int i = 0; i< m_ordre; i++)
-                    {
-                        tot = tot + i;
-                        if ( j.second->getS1 == i)
-                        {
-                            sommets[i]= j.second->getS1;
-                        }
-                        if ( j.second->getS2 == i)
-                        {
-                            sommets[i]= j.second->getS2;
-                        }
-                    }
-
-                }*/
             }
             puissance = puissance * 2;
         }
         if(nb == m_ordre-1)
         {
-
-            for ( size_t i = 0; i< aretes.size(); ++i)
+            if(true == connexite(vecAretes))
             {
-                std::cout<< aretes[i]->getMark();
+                m_allGraphes.push_back(vecAretes);
+                num = num + 1;
+                if (num%10000==0)
+                {
+                    std::cout << "num : "<< num << "  ";
+                }
             }
-            std::cout << std::endl;
-            allGraphes.insert({num,{aretes}});
-            num = num + 1;
-
-
-
         }
         compteur ++;
-    }
-    return allGraphes;
+    }m_nbAllGraphes = num;
 }
 
-/*
-void graphe::pointPareto(Svgfile& svgout, std::string couleur) const
-{
-    std::vector<double> poids;
-    int poidsTot1= 0, poidsTot2= 0;
 
-    for( auto i : m_aretes)
+
+
+int graphe::getNbAllGraphes()
+{
+    return m_nbAllGraphes;
+}
+
+void graphe::eraseAllGraphes(int position)
+{
+    m_allGraphes.erase(m_allGraphes.begin()+position);
+    m_nbAllGraphes -= 1;
+}
+
+bool graphe::connexite(std::vector<bool> vea)
+{
+    std::vector<bool> vecArete = vea;
+    std::vector<Sommet*> vecSommets = m_sommets;
+    int valide = 0, cpt=0;
+    bool cycle=false, fin = false;
+    for(auto o : vecSommets)
     {
-        if(i.second->getMarque()==1)
+        o->setMarque(false);
+    }
+    for(int i=0; i < m_nbArete; ++i)
+    {
+        if(vecArete[i]==true)
         {
-        poids = i.second->getVector();
-        poidsTot1 = poidsTot1 + poids[0];
-        poidsTot2 = poidsTot2 + poids[1];
+            cpt++;
+            if(valide ==0)
+            {
+                vecArete[i] = false;
+                vecSommets[m_aretes[i]->getS1()]->setMarque(true);
+                vecSommets[m_aretes[i]->getS2()]->setMarque(true);
+                valide = 1;
+            }
         }
     }
-    svgout.addDisk(poidsTot1,poidsTot2,5,couleur);
+    for(int e=0; e<cpt; e++)
+    {
+        for(int i=0; i < m_nbArete; ++i)
+        {
+            if(fin == true)
+                break;
+            if(vecArete[i]==true && fin == false)
+            {
+                if(vecSommets[m_aretes[i]->getS1()]->getMarque() == true && vecSommets[m_aretes[i]->getS2()]->getMarque() == false)
+                {
+                    vecSommets[m_aretes[i]->getS2()]->setMarque(true);
+                    vecArete[i]=false;
+                    fin = true;
+                    valide ++;
+                }else if(vecSommets[m_aretes[i]->getS2()]->getMarque() == true && vecSommets[m_aretes[i]->getS1()]->getMarque() == false)
+                {
+                    vecSommets[m_aretes[i]->getS1()]->setMarque(true);
+                    vecArete[i]=false;
+                    fin = true;
+                    valide ++;
+                }/*else if(vecSommets[m_aretes[i]->getS2()]->getMarque() == true && vecSommets[m_aretes[i]->getS1()]->getMarque() == true)
+                {
+                    cycle = true;
+                    vecArete[i]=false;
+                    fin = true;
+                    valide ++;
+                }*/
+            }
+        }
+        fin = false;
+    }
+    if(valide != cpt || cycle == true)
+    {
+        return false;
+    }
+    return true;
+}
 
-}*/
+void graphe::CoutAllGraphes()
+{
+    std::vector<float> vecCout;
+    for(int i=0; i< m_nbPoids+1;++i)
+    {
+        vecCout.push_back(0);
+    }
+    for(int i=0; i < m_nbAllGraphes; ++i)
+    {
+        for(int a=0; a<m_nbArete ; ++a)
+        {
+            if(m_allGraphes[i][a]==true)
+            {
+                for(int z=0; z<m_nbPoids; z++)
+                {
+                    vecCout[z] += m_aretes[a]->get_Cout(z);
+                }
+            }
+        }
+        vecCout[m_nbPoids]= i;
+        m_coutAllGraphes.push_back(vecCout);
+        for(size_t i=0; i<vecCout.size(); i++)
+        {
+            vecCout[i] = 0;
+        }
+    }
+}
+
+void graphe::triCout2(int poids)
+{
+    std::sort(m_coutAllGraphes.begin(),m_coutAllGraphes.end(),[poids](std::vector<float> a1, std::vector<float> a2)
+    {
+        return a1[poids] < a2[poids];
+    });
+}
+
+void graphe::selectPareto()
+{
+    m_selectPareto.push_back(m_coutAllGraphes[0]);
+    float poidsMAx = m_coutAllGraphes[0][0];
+    for(int i=1; i < m_nbAllGraphes; ++i)
+    {
+        if(m_coutAllGraphes[i][0] < poidsMAx)
+        {
+            poidsMAx = m_coutAllGraphes[i][0];
+            m_selectPareto.push_back(m_coutAllGraphes[i]);
+            std::cout << "dedad" << m_coutAllGraphes[i][m_nbPoids];
+        }
+    }
+}
+
+void graphe::affichagePareto(Svgfile& svgout)
+{
+    std::string text;
+    svgout.addGrid(10);
+    for(int i=0; i<m_nbAllGraphes; i++)
+    {
+        svgout.addDisk(m_coutAllGraphes[i][0]*10, 800 - m_coutAllGraphes[i][1]*10, 3, "red");
+    }
+    for(size_t i=0; i< m_selectPareto.size(); i++)
+    {
+        text = "(";
+        Svgfile svgal{"output" + to_string(i) +".svg"};
+        for(int j=0; j< m_nbPoids-1; j++)
+        {
+            text += to_string(m_selectPareto[i][j]) + ";";
+        }
+        text += to_string(m_selectPareto[i][m_nbPoids-1]) + ")" ;
+        svgal.addText(50,50,text,"black");
+        afficher(svgal,getVecAllGraphes(m_selectPareto[i][m_nbPoids]), 0, 0, "black");
+        svgout.addDisk(m_selectPareto[i][0]*10, 800 - m_selectPareto[i][1]*10, 3, "green");
+        svgout.addText(m_selectPareto[i][0]*10-50, 800 - m_selectPareto[i][1]*10, text,"black");
+
+    }
+}

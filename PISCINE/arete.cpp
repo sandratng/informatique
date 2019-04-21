@@ -16,6 +16,11 @@ void Arete::ajouterPoids(float poids)
     m_poids.push_back(poids);
 }
 
+int Arete::getID()
+{
+    return m_id;
+}
+
 int Arete::getS1()
 {
     return m_S1;
@@ -40,14 +45,4 @@ std::vector<float> Arete::getCout()
 float Arete::get_Cout(int poids)
 {
     return m_poids[poids];
-}
-
-bool Arete::getMark()
-{
-    return m_mark;
-}
-
-void Arete::setMark(bool mark)
-{
-    m_mark = mark;
 }
