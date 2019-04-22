@@ -26,6 +26,8 @@ class Sommet
         int getID();
         double getX();
         double getY();
+        float getPoids();
+        void setPoids(float);
         int getDegre();
         bool getMarque();
         void setMarque(bool);
@@ -48,6 +50,7 @@ class Sommet
         /// Donn�es sp�cifiques du sommet
         int m_id; // Identifiant
         double m_x, m_y; // Position
+        float m_poids;
         bool m_marque = false;
 
 };

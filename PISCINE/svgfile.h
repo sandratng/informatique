@@ -14,6 +14,7 @@ class Svgfile
         ~Svgfile();
 
         void addDisk(double x, double y, double r, std::string color=defcol);
+        void addDiskC(double x, double y, double r , std::string svgName, std::string color=defcol);
         void addsquare(double x, double y, double l,double l2, std::string color=defcol);
         void addCircle(double x, double y, double r, double ep, std::string color=defcol);
         void addTriangle(double x1, double y1, double x2, double y2,
@@ -30,7 +31,8 @@ class Svgfile
         void addText(double x, double y, double val, std::string color=defcol);
 
         void addGrid(double span=100.0, bool numbering=true, std::string color="lightgrey");
-
+        void addRectangle(double x, double y,double width ,double height, std::string colorFill);
+        void addGrid(double span, double span2, bool numbering, std::string color="lightgrey");
         static std::string makeRGB(int r, int g, int b);
 
         /// Type non copiable

@@ -55,7 +55,19 @@ int Sommet::getDegre()
      m_marque = marque;
  }
 
+ float Sommet::getPoids()
+ {
+     return m_poids;
+ }
+
+
+void Sommet::setPoids(float poids)
+{
+    m_poids = poids;
+}
 /*
+
+
 std::unordered_map<std::string,std::string> Sommet::parcoursBFS() const{
     std::unordered_map<std::string,std::string> l_pred;
     std::queue <const Sommet*> file;
