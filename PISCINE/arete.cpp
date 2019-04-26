@@ -16,11 +16,6 @@ void Arete::ajouterPoids(float poids)
     m_poids.push_back(poids);
 }
 
-int Arete::getID()
-{
-    return m_id;
-}
-
 int Arete::getS1()
 {
     return m_S1;

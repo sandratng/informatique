@@ -13,7 +13,6 @@ class Arete
         void ajouterPoids(float);
         int getS1();
         int getS2();
-        int getID();
         std::vector<float> getCout();
         float get_Cout(int);
         void afficherVec();

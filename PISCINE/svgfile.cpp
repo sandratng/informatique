@@ -72,20 +72,6 @@ void Svgfile::addDisk(double x, double y, double r, std::string color)
             << attrib("fill", color )
             << "/>\n";
 }
-
-void Svgfile::addDiskC(double x, double y, double r, std::string fileName,std::string color)
-{
-    m_ostrm << "<a "
-            << attrib("href", fileName)
-            << ">"
-            << "<circle "
-            << attrib("cx", x)
-            << attrib("cy", y)
-            << attrib("r",  r)
-            << attrib("fill", color )
-            << "/></a>\n";
-}
-
 void Svgfile::addsquare(double x, double y, double l, double l2,std::string colorFill)
 {
 
@@ -184,69 +170,24 @@ void Svgfile::addText(double x, double y, double val, std::string color)
     oss << val;
     addText(x, y, oss.str(), color);
 }
-void Svgfile::addRectangle(double x, double y,double width ,double height, std::string colorFill)
-{
-    m_ostrm << "<rect x=\" "
-            << x << "\"  y=\" "
-            << y << "\"  width=\" "
-            << width << "\" height=\" "
-            << height << "\" style=\" fill:"
-            << colorFill
-            << "\" />\n";
-}
 
 void Svgfile::addGrid(double span, bool numbering, std::string color)
 {
     double y=0;
-    addRectangle(0,0,2,m_height,"black");
-    addRectangle(0,798,m_width,2,"black");
-    addLine(0,0,10,10,"black");
-    addLine(1000,800,990,790,"black");
-    addText(20,30,"COUT 2","black");
-    addText(930,770,"COUT 1", "black");
     while (y<=m_height)
     {
-        addLine(0, y*10, m_width*10, y*10, color);
+        addLine(0, y, m_width, y, color);
         if (numbering)
-            addText(5, m_height-y*10-5, y, color);
+            addText(5, y-5, y, color);
         y+=span;
     }
 
     double x=0;
-    std::cout<< m_width;
     while (x<=m_width)
     {
-        addLine(x*10, 0, x*10, m_height*10  , color);
+        addLine(x, 0, x, m_height, color);
         if (numbering)
-            addText(x*10+5, m_height-5, x, color);
-        x+=span;
-    }
-}
-
-void Svgfile::addGrid(double span, double span2, bool numbering, std::string color)
-{
-    double y=0;
-    addRectangle(0,0,2,m_height,"black");
-    addRectangle(0,798,m_width,2,"black");
-    addLine(0,0,10,10,"black");
-    addLine(1000,800,990,790,"black");
-    addText(20,30,"COUT 2","black");
-    addText(930,770,"COUT 1", "black");
-    while (y<=m_height)
-    {
-        addLine(0, y*5, m_width*5, y*5, color);
-        if (numbering)
-            addText(5, m_height-y*5-5, y*span2, color);
-        y+=span;
-    }
-
-    double x=0;
-    std::cout<< m_width;
-    while (x<=m_width)
-    {
-        addLine(x*5, 0, x*5, m_height*5  , color);
-        if (numbering)
-            addText(x*5+5, m_height-5, x, color);
+            addText(x+5, 15, x, color);
         x+=span;
     }
 }
